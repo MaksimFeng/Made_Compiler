@@ -20,6 +20,7 @@ static int next(void){
 
 }
 
+
 static int chrpos(char *s, int c){
     char *p;
 
@@ -27,10 +28,27 @@ static int chrpos(char *s, int c){
     return (p ? p - s : -1);
 }
 // Put back an unwanted character
-
 static void putback(int c){
     Putback = c;
 }
+// Scan and return an integer literal
+// value from the input file.
+
+static int scanint(int c){
+    int k, val = 0;
+    while ((k = chrpos("0123456789", c)) >= 0){
+        val = val * 10 + k;
+        c = next();
+    }
+    // We hit a non-integer character, put it back.
+
+    putback(c);
+    return val;
+}
+// Return the position of character c
+// in string s, or -1 if c not found
+
+
 // Skip past input that we don't need to deal with, 
 // i.e. whitespace, newlines. Return the first
 // character we do need to deal with.
@@ -79,16 +97,4 @@ int scan(struct token *t){
 // Scan and return an integer literal
 // value from the input file.
 
-static int scanint(int c){
-    int k, val = 0;
-    while ((k = chrpos("0123456789", c)) >= 0){
-        val = val * 10 + k;
-        c = next();
-    }
-    // We hit a non-integer character, put it back.
-
-    putback(c);
-    return val;
-}
-// Return the position of character c
 // in string s, or -1 if c not found

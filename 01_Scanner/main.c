@@ -43,6 +43,8 @@ static void scanfile() {
 // if we don't have an argument. Open up the input
 // file and call scanfile() to scan the tokens in it.
 void main(int argc, char *argv[]) {
+  struct ASTnode *n;
+  
   if (argc != 2)
     usage(argv[0]);
 
@@ -52,7 +54,9 @@ void main(int argc, char *argv[]) {
     fprintf(stderr, "Unable to open %s: %s\n", argv[1], strerror(errno));
     exit(1);
   }
-
+  scan(&Token); // Get the first token
+  n = binexpr();
+  printf("%d\n", interpretAST(n));	// Calculate the final result
   scanfile();
   exit(0);
 }
