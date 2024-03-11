@@ -21,6 +21,7 @@ struct token {
 };
 
 //AST node types
+//When the token is a T_INTLIT (i.e. an integer literal), the intvalue field will hold the value of the integer that we scanned in.
 
 // AST node types
 enum {
