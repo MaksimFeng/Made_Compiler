@@ -26,11 +26,15 @@ static int getAST(struct ASTnode *n){
             exit(1);
 }
 }
-
-void generatecode(struct ASTnode *n){
-    int reg;
-    cgpreamble();
-    reg = getAST(n);
-    cgprintint(reg);
-    cgpostamble();
+void genpreamble() {
+  cgpreamble();
+}
+void genpostamble() {
+  cgpostamble();
+}
+void genfreeregs() {
+  freeall_registers();
+}
+void genprintint(int reg) {
+  cgprintint(reg);
 }

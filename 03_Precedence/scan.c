@@ -64,10 +64,33 @@ static int scanint(int c) {
   return val;
 }
 
+static int scanident(int c, char *buf, int lim){
+  int i = 0;
+  // Allow digits, alpha and underscores
+  while(isalpha(c)||isdigit(c)|| '_' == c){
+    // Error if we hit the identifier length limit
+    //else append to buff[] and get next character
+    if (lim -1 == i){
+      fprintf(stderr, "Identifier too long on line %d\n", Line);
+      exit(1);
+    }
+  }
+}
+
+static int keyword(char *s){
+   switch (*s) {
+    case 'p':
+      if (!strcmp(s, "print"))
+	return (T_PRINT);
+      break;
+  }
+  return (0);
+}
+
 // Scan and return the next token found in the input.
 // Return 1 if token valid, 0 if no tokens left.
 int scan(struct token *t) {
-  int c;
+  int c, tokentype;
 
   // Skip whitespace
   c = skip();
@@ -90,6 +113,9 @@ int scan(struct token *t) {
   case '/':
     t->token = T_SLASH;
     break;
+  case ';':
+    t->token = T_SEMI;
+    break;
   default:
 
     // If it's a digit, scan the
@@ -97,6 +123,14 @@ int scan(struct token *t) {
     if (isdigit(c)) {
       t->intvalue = scanint(c);
       t->token = T_INTLIT;
+      break;
+    }else if (isalpha(c)|| '_' == c){
+      // Read in a keyword or identifier
+      scanident(c, Text, TEXTLEN);
+
+      // If it's a recognised keyword, return that token
+    if (tokentype = keyword(Text)) {
+      t->token = tokentype;
       break;
     }
 
