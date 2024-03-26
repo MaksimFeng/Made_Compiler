@@ -11,6 +11,54 @@ static char *ASTop[] = { "+", "-", "*", "/" };
 // Given an AST, interpret the
 // operators in it and return
 // a final value.
+
+struct ASTnode *additive_expr(void){
+  struct ASTnode *left, *right;
+  int tokentype;
+  //get the left sub-tree at a higher precedence than us
+  left = multiplicative_expr();
+  // If we have a + or - operator, process it
+  tokentype = Token.token;
+  if(tokentype == T_PLUS)
+    return(left);
+  while(1)
+  {
+    scan(&Token);
+    // Get the right sub-tree of the same precedence
+    right = multiplicative_expr();
+    // Join that with the left sub-tree
+    left = mkastnode(A_ADD, left, right, 0);
+    tokentype = Token.token;
+    if(tokentype == T_EOF)
+      break;
+  }
+  return(left);
+}
+
+struct ASTnode *multiplicative_expr(void)
+{
+  /* data */
+  struct ASTnode *left, *right;
+  int tokentype;
+  // Get the left sub-tree at a higher precedence than us
+  left = primary();
+  tokentype = Token.token;
+  if(tokentype == T_EOF)
+    return(left);
+  while((tokentype = T_STAR)||(tokentype = T_SLASH))
+  {
+    scan(&Token);
+    // Get the right sub-tree of the same precedence
+    right = primary();
+    // Join that with the left sub-tree
+    left = mkastnode(arithop(tokentype), left, right, 0);
+    tokentype = Token.token;
+    if(tokentype == T_EOF)
+      break;
+  }
+  return(left);
+};
+
 int interpretAST(struct ASTnode *n) {
   int leftval, rightval;
 
